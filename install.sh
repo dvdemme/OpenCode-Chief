@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-# install.sh — installa "OpenCode Commander" nel tuo opencode globale.
+# install.sh — installa "OpenCode Chief" nel tuo opencode globale.
 #
-# Guida interattiva: configura i provider (deepseek/xai/google), collega i file
-# (agenti + skill + supporto) e opzionalmente imposta commander come default.
+# Guida interattiva: configura i provider (deepseek/xai), collega i file
+# (agenti + skill) e opzionalmente imposta chief come default.
 #
 # Uso:
 #   ./install.sh           symlink (consigliato: `git pull` aggiorna tutto da solo)
@@ -13,7 +13,6 @@
 
 set -u
 
-# ── colori ────────────────────────────────────────────────────────────────
 BOLD="$(tput bold 2>/dev/null || printf '')"
 GREEN="$(tput setaf 2 2>/dev/null || printf '')"
 YELLOW="$(tput setaf 3 2>/dev/null || printf '')"
@@ -22,9 +21,9 @@ RESET="$(tput sgr0 2>/dev/null || printf '')"
 
 CONFIG_DIR="${OPENCODE_CONFIG_DIR:-$HOME/.config/opencode}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MODE="symlink"   # symlink | copy
+MODE="symlink"
 
-PROVIDERS="deepseek xai google"
+PROVIDERS="deepseek xai"
 
 say()  { printf '%b\n' "$*"; }
 ok()   { say "${GREEN}✓${RESET} $*"; }
@@ -35,20 +34,16 @@ step() { say ""; say "${BOLD}── $* ──${RESET}"; }
 provider_label() { case "$1" in
   deepseek) echo "DeepSeek" ;;
   xai)      echo "xAI (Grok)" ;;
-  google)   echo "Google (Gemini)" ;;
   *)        echo "$1" ;;
 esac; }
 
 provider_agents() { case "$1" in
-  deepseek) echo "commander, rocket, rover" ;;
-  xai)      echo "quasar" ;;
-  google)   echo "antenna, hubble" ;;
+  deepseek) echo "chief, gardener, weeder, scout" ;;
+  xai)      echo "inspector, plan-check" ;;
   *)        echo "?" ;;
 esac; }
 
-is_authenticated() { # $1 = provider_id
-  opencode auth list 2>/dev/null | grep -qi "$1"
-}
+is_authenticated() { opencode auth list 2>/dev/null | grep -qi "$1"; }
 
 usage() {
   say "Uso: ./install.sh [--copy] [--help]"
@@ -57,10 +52,9 @@ usage() {
 
 provider_setup() {
   step "Provider (chiavi API)"
-  say "Il team usa tre vendor; ogni agente ha un suo modello:"
-  say "  ${BOLD}DeepSeek${RESET}  → commander, rocket, rover"
-  say "  ${BOLD}xAI${RESET}       → quasar"
-  say "  ${BOLD}Google${RESET}    → antenna, hubble"
+  say "Il team usa due vendor; ogni agente ha un suo modello:"
+  say "  ${BOLD}DeepSeek${RESET}  → chief, gardener, weeder, scout"
+  say "  ${BOLD}xAI${RESET}       → inspector, plan-check"
   say "Configura i provider per cui hai una chiave; gli altri puoi saltarli."
   say ""
   local id label agents skipped=""
@@ -108,9 +102,9 @@ provider_setup() {
 
 install_files() {
   step "Installazione file ($MODE)"
-  mkdir -p "$CONFIG_DIR/agent" "$CONFIG_DIR/skill" "$CONFIG_DIR/scripts"
+  mkdir -p "$CONFIG_DIR/agent" "$CONFIG_DIR/skill"
 
-  link_one() { # $1 = sorgente  $2 = destinazione (file o dir)
+  link_one() {
     local src="$1" dst="$2"
     if [ -e "$dst" ] || [ -L "$dst" ]; then
       local a
@@ -135,17 +129,15 @@ install_files() {
     name="$(basename "$d")"
     link_one "$d" "$CONFIG_DIR/skill/$name"
   done
-  link_one "$SCRIPT_DIR/pricing.md" "$CONFIG_DIR/pricing.md"
-  link_one "$SCRIPT_DIR/scripts/telemetry.py" "$CONFIG_DIR/scripts/telemetry.py"
 }
 
 config_setup() {
   step "Config (opzionale)"
   local a
-  read -r -p "  Impostare commander come modello di default (model + small_model)? [s/N]: " a
+  read -r -p "  Impostare chief come modello di default (model + small_model)? [s/N]: " a
   case "${a:-N}" in
     s|S) ;;
-    *) say "  Saltato. Commander funziona comunque: i modelli sono nei singoli agenti."; return ;;
+    *) say "  Saltato. Chief funziona comunque: i modelli sono nei singoli agenti."; return ;;
   esac
   if [ -e "$CONFIG_DIR/opencode.jsonc" ] || [ -e "$CONFIG_DIR/opencode.json" ]; then
     say "  Trovato un config esistente: non lo tocco. Aggiungi a mano queste righe a ${CONFIG_DIR}/opencode.jsonc:"
@@ -161,17 +153,17 @@ config_setup() {
 
 verify() {
   step "Verifica"
-  if opencode agent list 2>/dev/null | grep -q '^commander'; then
-    ok "Agente 'commander' rilevato."
+  if opencode agent list 2>/dev/null | grep -q '^chief'; then
+    ok "Agente 'chief' rilevato."
   else
-    warn "'commander' non trovato. Riavvia opencode e riesegui ./install.sh."
+    warn "'chief' non trovato. Riavvia opencode e riesegui ./install.sh."
   fi
   local id
   for id in $PROVIDERS; do
     is_authenticated "$id" && ok "Provider $id: configurato."
   done
   local missing="" m
-  for m in deepseek/deepseek-v4-pro deepseek/deepseek-flash google/gemini-3.8-flash xai/grok-4.7; do
+  for m in deepseek/deepseek-v4-pro deepseek/deepseek-flash xai/grok-4.7; do
     opencode models 2>/dev/null | grep -qF "$m" || missing="$missing $m"
   done
   if [ -n "$missing" ]; then
@@ -190,7 +182,7 @@ main() {
     esac
   done
 
-  say "${BOLD}OpenCode Commander${RESET} — installazione"
+  say "${BOLD}OpenCode Chief${RESET} — installazione"
 
   if ! command -v opencode >/dev/null 2>&1; then
     err "opencode non trovato nel PATH."
@@ -205,7 +197,7 @@ main() {
   verify
 
   say ""
-  say "${BOLD}Fatto.${RESET} Riavvia opencode e lancia:  ${GREEN}opencode --agent commander${RESET}"
+  say "${BOLD}Fatto.${RESET} Riavvia opencode e lancia:  ${GREEN}opencode --agent chief${RESET}"
 }
 
 main "$@"

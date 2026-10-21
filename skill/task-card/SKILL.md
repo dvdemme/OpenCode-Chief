@@ -1,12 +1,12 @@
 ---
 name: task-card
-description: Usare SOLO subito prima di una chiamata Task a rocket, rover, hubble, antenna o quasar. Produce la task card da incollare nel prompt del subagent: obiettivo, done, file, vincoli, assunzioni, output atteso. Non usarla per routing, escalation o per decidere i gate.
+description: Usare SOLO subito prima di una chiamata Task a gardener, weeder, inspector, scout o plan-check. Produce la task card da incollare nel prompt del subagent: obiettivo, done, file, vincoli, assunzioni, output atteso. Non usarla per routing, escalation o per decidere i gate.
 ---
 
 # Task card
 
 Produci UNA task card per subagent, da incollare tale e quale nel prompt del Task.
-Se il lavoro mescola meccanico e design, spezza in due card (rover + rocket).
+Se il lavoro mescola meccanico e design, spezza in due card (weeder + gardener).
 
 ## Campi obbligatori (mai omettere)
 - **id** — identificatore breve del task.
@@ -20,10 +20,11 @@ Se il lavoro mescola meccanico e design, spezza in due card (rover + rocket).
 - **formato report di ritorno** — cosa deve riportare.
 
 ## Regole per destinatario
-- **rocket**: includi il piano richiesto prima del codice (serve al gate `antenna`).
-- **rover**: se serve il pacchetto di review, aggiungi la frase "carica `review-package`".
-- **quasar**: la card contiene il pacchetto di review, non "esplora il repo".
-- **antenna**: la card è la checklist chiusa + il piano/diff da valutare.
+- **gardener**: includi il piano richiesto prima del codice non banale.
+- **weeder**: se serve il pacchetto di review, aggiungi la frase "carica `review-package`".
+- **inspector**: la card contiene il pacchetto di review, non "esplora il repo".
+- **plan-check**: la card è solo lo schema goal/done/out/tasks/assumptions/risk, tool-off.
+- **scout**: la card indica l'immagine/diagramma da interpretare e cosa estrarre.
 
 ## Vietato
 - Segreti, token, contenuto di `.env`.

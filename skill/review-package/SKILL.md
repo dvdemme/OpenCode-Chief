@@ -1,9 +1,9 @@
 ---
 name: review-package
-description: Usare SOLO per assemblare il pacchetto di review di quasar (diff con untracked, status, output test/build, call-graph) o il solo delta dopo un verdetto non APPROVATO. Non implementa codice e non legge .env o segreti.
+description: Usare SOLO per assemblare il pacchetto di review dell'inspector (diff con untracked, status, output test/build, call-graph) o il solo delta dopo un verdetto non APPROVATO. Non implementa codice e non legge .env o segreti.
 ---
 
-# Pacchetto di review (per quasar)
+# Pacchetto di review (per inspector)
 
 ## Sequenza deterministica
 1. `git add -N .` per includere gli untracked nel diff (MAI `git add` senza `-N`, MAI commit).
@@ -23,6 +23,6 @@ Manca uno dei cinque → dichiarare "PACCHETTO INCOMPLETO" in testa, non nascond
 Solo i file citati nelle riserve bloccanti + l'esito dei test dei fix. Non l'intero diff.
 
 ## Vincoli
-Rover NON chiama quasar: il pacchetto risale al commander, che lo incolla nel Task di quasar.
+weeder NON chiama inspector: il pacchetto risale al chief, che lo incolla nel Task dell'inspector.
 
 Output: un blocco PACCHETTO.

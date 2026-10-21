@@ -1,19 +1,19 @@
-# OpenCode Commander
+# OpenCode Chief
 
-Un "team" di agenti AI per [opencode](https://opencode.ai): un orchestratore (`commander`) che pianifica, decompone e delega a un equipaggio di subagent specializzati, con revisione incrociata multi-vendor e controllo costo/beneficio.
+Un "team" di agenti AI per [opencode](https://opencode.ai): un orchestratore (`chief`) che pianifica, decompone e delega a un equipaggio di subagent specializzati, con revisione incrociata multi-vendor e controllo costo/beneficio.
 
-Tre vendor indipendenti (DeepSeek, Google/Gemini, xAI/Grok), ognuno usato dove rende di più.
+Due vendor indipendenti (DeepSeek e xAI/Grok), ognuno usato dove rende di più.
 
 ## Requisiti
 
 - [opencode](https://opencode.ai) installato (consigliata l'ultima versione).
-- Una o più chiavi API: DeepSeek, Google, xAI (vedi FAQ se ne hai una sola).
+- Una o più chiavi API: DeepSeek, xAI (vedi FAQ se ne hai una sola).
 
 ## Installazione (guidata)
 
 ```bash
-git clone https://github.com/dvdemme/OpenCode-Commander.git
-cd OpenCode-Commander
+git clone <repo-url>
+cd <repo-dir>
 ./install.sh          # oppure: ./install.sh --copy
 ```
 
@@ -22,51 +22,51 @@ cd OpenCode-Commander
 1. verifica che opencode sia installato;
 2. configura i provider (le chiavi vengono chieste da `opencode auth login`, non da questo script);
 3. collega agenti + skill nel tuo `~/.config/opencode/`;
-4. (opzionale) imposta `commander` come modello di default;
+4. (opzionale) imposta `chief` come modello di default;
 5. verifica l'installazione.
 
 Poi **riavvia opencode** e lancia:
 
 ```bash
-opencode --agent commander
+opencode --agent chief
 ```
 
 ## Il team
 
 | Agente | Modello | Ruolo |
 |---|---|---|
-| `commander` | DeepSeek V4 Pro | orchestra, delega, integra |
-| `rocket` | DeepSeek V4 Pro | implementa codice e test |
-| `rover` | DeepSeek Flash | task meccanici/ripetitivi |
-| `hubble` | Gemini Flash | interpreta immagini/diagrammi |
-| `antenna` | Gemini Flash | review soft "anticipata" |
-| `quasar` | Grok 4.7 | review deep "finale" |
+| `chief` | DeepSeek V4 Pro | orchestra, delega, integra |
+| `gardener` | DeepSeek V4 Pro | implementa codice e test |
+| `weeder` | DeepSeek Flash | task meccanici/ripetitivi |
+| `scout` | DeepSeek Flash | interpreta immagini/diagrammi |
+| `inspector` | Grok 4.7 | review incrociata del codice |
+| `plan-check` | Grok 4.7 | micro-revisione del piano |
 
 ## Skill automatiche
 
 - `task-card` — card di delega prima di ogni Task.
-- `review-package` — pacchetto per la review di `quasar`.
-- `close-task` — handoff + snapshot costi a fine task.
+- `review-package` — pacchetto per la review dell'`inspector`.
+- `close-task` — handoff a fine task.
 
-Le skill si caricano da sole quando servono (l'utente non le invoca): il `commander` le attiva con giudizio.
+Le skill si caricano da sole quando servono (l'utente non le invoca): il `chief` le attiva con giudizio.
 
 ## Aggiornamento
 
 ```bash
-cd OpenCode-Commander && git pull
+cd <repo-dir> && git pull
 ```
 
 Con l'installazione via symlink (default) l'aggiornamento è automatico: `git pull` aggiorna i file collegati.
 
 ## FAQ
 
-**Ho una sola chiave (es. solo DeepSeek).** Puoi installare lo stesso: `quasar` (xAI) e `antenna`/`hubble` (Google) non risponderanno finché non configuri quei provider. Configurali dopo con `opencode auth login -p <id>`.
+**Ho una sola chiave (es. solo DeepSeek).** Puoi installare lo stesso: `inspector` e `plan-check` (xAI) non risponderanno finché non configuri quel provider. Configuralo dopo con `opencode auth login -p xai`.
 
 **Posso saltare un provider?** Sì, l'installer te lo chiede per ciascuno. Se salti, gli agenti collegati restano inattivi (ma il resto funziona).
 
 **Windows?** Non ancora supportato (v2).
 
-**Dove finiscono i file?** In `~/.config/opencode/` (agenti in `agent/`, skill in `skill/`, supporto in `scripts/`).
+**Dove finiscono i file?** In `~/.config/opencode/` (agenti in `agent/`, skill in `skill/`).
 
 ## Licenza
 
