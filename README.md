@@ -12,8 +12,8 @@ Due vendor indipendenti (DeepSeek e xAI/Grok), ognuno usato dove rende di più.
 ## Installazione (guidata)
 
 ```bash
-git clone <repo-url>
-cd <repo-dir>
+git clone https://github.com/dvdemme/OpenCode-Chief.git
+cd OpenCode-Chief
 ./install.sh          # oppure: ./install.sh --copy
 ```
 
@@ -53,7 +53,7 @@ Le skill si caricano da sole quando servono (l'utente non le invoca): il `chief`
 ## Aggiornamento
 
 ```bash
-cd <repo-dir> && git pull
+cd OpenCode-Chief && git pull
 ```
 
 Con l'installazione via symlink (default) l'aggiornamento è automatico: `git pull` aggiorna i file collegati.
