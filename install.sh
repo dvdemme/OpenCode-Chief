@@ -104,6 +104,18 @@ install_files() {
   step "Installazione file ($MODE)"
   mkdir -p "$CONFIG_DIR/agent" "$CONFIG_DIR/skill"
 
+  # Migrazione da OpenCode-Commander: rimuovi i vecchi nomi (idempotente).
+  for a in commander rocket rover hubble antenna quasar; do
+    if [ -e "$CONFIG_DIR/agent/$a.md" ] || [ -L "$CONFIG_DIR/agent/$a.md" ]; then
+      rm -f "$CONFIG_DIR/agent/$a.md" && say "  rimosso vecchio agente: $a.md"
+    fi
+  done
+  for f in "$CONFIG_DIR/pricing.md" "$CONFIG_DIR/scripts/telemetry.py"; do
+    if [ -e "$f" ] || [ -L "$f" ]; then
+      rm -f "$f" && say "  rimosso vecchio: $f"
+    fi
+  done
+
   link_one() {
     local src="$1" dst="$2"
     if [ -e "$dst" ] || [ -L "$dst" ]; then

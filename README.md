@@ -50,6 +50,21 @@ opencode --agent chief
 
 Le skill si caricano da sole quando servono (l'utente non le invoca): il `chief` le attiva con giudizio.
 
+## Migrazione da OpenCode-Commander
+
+Se avevi la vecchia installazione "OpenCode-Commander": i nomi degli agenti sono cambiati
+(`commander` → `chief`, `rocket` → `gardener`, `rover` → `weeder`, `hubble` → `scout`,
+`antenna` → `plan-check`, `quasar` → `inspector`) ed è stato rimosso il calcolo costi
+(`pricing.md`, `telemetry.py`). Per aggiornare esegui una volta:
+
+```bash
+cd OpenCode-Commander && git pull && ./install.sh
+```
+
+`install.sh` rimuove da solo i vecchi nomi e collega i nuovi. Poi riavvia opencode e usa
+`opencode --agent chief`. I riferimenti ai vecchi nomi (prompt, script) non vengono migrati
+automaticamente.
+
 ## Aggiornamento
 
 ```bash
