@@ -1,11 +1,13 @@
 ---
 name: review-package
-description: Usare SOLO per assemblare il pacchetto di review dell'inspector (diff con untracked, status, output test/build, call-graph) o il solo delta dopo un verdetto non APPROVATO. Non implementa codice e non legge .env o segreti.
+description: Usare SOLO per assemblare il pacchetto di review dell'inspector (diff con untracked, status, output test/build, call-graph) o il solo delta dopo un verdetto non APPROVATO. Solo in postura build. Non implementa codice e non legge .env o segreti.
 ---
 
 # Pacchetto di review (per inspector)
 
-## Sequenza deterministica
+Carica questa skill solo se `review-gate` ha dato LITE o FULL. In postura PLAN `git add -N` è negato: se il diff non è già disponibile, segnala `PACCHETTO INCOMPLETO` e salta la review.
+
+## Sequenza deterministica (solo BUILD)
 1. `git add -N .` per includere gli untracked nel diff (MAI `git add` senza `-N`, MAI commit).
 2. `git status --porcelain` → elenco file (modificati + untracked).
 3. `git diff` → il diff.

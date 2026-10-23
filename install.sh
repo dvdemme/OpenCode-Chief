@@ -116,31 +116,12 @@ install_files() {
     fi
   done
 
-  link_one() {
-    local src="$1" dst="$2"
-    if [ -e "$dst" ] || [ -L "$dst" ]; then
-      local a
-      read -r -p "  Esiste già $dst. Sovrascrivere? [s/N]: " a
-      case "${a:-N}" in s|S) rm -rf "$dst" ;; *) warn "saltato: $dst"; return ;; esac
-    fi
-    if [ "$MODE" = "copy" ]; then
-      cp -R "$src" "$dst" && ok "copiato  $dst"
-    else
-      ln -s "$src" "$dst" && ok "collegato $dst"
-    fi
-  }
-
-  local f
-  for f in "$SCRIPT_DIR"/agent/*.md; do
-    [ -e "$f" ] || continue
-    link_one "$f" "$CONFIG_DIR/agent/$(basename "$f")"
-  done
-  local d name
-  for d in "$SCRIPT_DIR"/skill/*/; do
-    [ -e "${d}SKILL.md" ] || continue
-    name="$(basename "$d")"
-    link_one "$d" "$CONFIG_DIR/skill/$name"
-  done
+  # Collega agenti, skill e comandi (stessa logica usata dopo ogni git pull).
+  if command -v node >/dev/null 2>&1; then
+    node "$SCRIPT_DIR/scripts/ensure-links.mjs" || warn "collegamento incompleto: riesegui ./install.sh"
+  else
+    bash "$SCRIPT_DIR/scripts/ensure-links.sh" || warn "collegamento incompleto: riesegui ./install.sh"
+  fi
 }
 
 config_setup() {
