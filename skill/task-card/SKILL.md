@@ -1,6 +1,6 @@
 ---
 name: task-card
-description: Usare SOLO subito prima di una chiamata Task a gardener, weeder, inspector, scout, mapper o plan-check. Produce la task card da incollare nel prompt del subagent: obiettivo, done, file, vincoli, assunzioni, formato e tetto del report. Non usarla per routing, escalation o per decidere i gate.
+description: "Usare SOLO subito prima di una chiamata Task a gardener, weeder, inspector, scout, mapper o plan-check. Produce la task card da incollare nel prompt del subagent: obiettivo, done, file, vincoli, assunzioni, formato e tetto del report. Non usarla per routing, escalation o per decidere i gate."
 ---
 
 # Task card

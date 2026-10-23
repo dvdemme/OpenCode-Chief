@@ -1,12 +1,20 @@
 ---
-description: Subagent per l'interpretazione di immagini: screenshot UI, schemi elettrici/idraulici, diagrammi, foto hardware, datasheet. Usa DeepSeek Flash (con supporto immagini). Sola lettura.
+description: "Subagent per l'interpretazione di immagini: screenshot UI, schemi elettrici/idraulici, diagrammi, foto hardware, datasheet. Usa DeepSeek Flash (con supporto immagini). Sola lettura."
 mode: subagent
 model: deepseek/deepseek-flash
-temperature: 0.1
-permission:
-  edit: deny
-  bash: deny
-  webfetch: allow
+request:
+  body:
+    temperature: 0.1
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: webfetch
+    resource: "*"
+    effect: allow
 ---
 
 Sei il subagent "scout" del team: interpreti immagini e diagrammi per conto del chief.

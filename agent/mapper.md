@@ -2,7 +2,9 @@
 description: Ricognizione a basso costo. Mappa il codice e restituisce file:riga, niente dump. Sola lettura. Usa DeepSeek Flash.
 mode: subagent
 model: deepseek/deepseek-flash
-temperature: 0.1
+request:
+  body:
+    temperature: 0.1
 steps: 40
 permissions:
   - action: edit

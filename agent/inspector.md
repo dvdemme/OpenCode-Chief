@@ -2,14 +2,25 @@
 description: Subagent di revisione incrociata. Revisiona codice e modifiche con modello xAI Grok 4.7 (vendor diverso dal gardener DeepSeek). Sola lettura.
 mode: subagent
 model: xai/grok-4.7
-temperature: 0.1
-permission:
-  edit: deny
-  bash:
-    "*": deny
-    "git diff*": allow
-    "git log*": allow
-    "git status*": allow
+request:
+  body:
+    temperature: 0.1
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "git diff*"
+    effect: allow
+  - action: shell
+    resource: "git log*"
+    effect: allow
+  - action: shell
+    resource: "git status*"
+    effect: allow
 ---
 
 Sei il revisore incrociato ("inspector") del team. Il codice che revisioni è stato scritto da un altro modello (DeepSeek): la tua indipendenza è il valore aggiunto.

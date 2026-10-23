@@ -2,15 +2,26 @@
 description: Subagent per task meccanici e ripetitivi a basso rischio (rename, fix banali, test ripetuti, piccole modifiche). Usa DeepSeek Flash (economico).
 mode: subagent
 model: deepseek/deepseek-flash
-temperature: 0.1
+request:
+  body:
+    temperature: 0.1
 steps: 100
-permission:
-  edit: allow
-  bash:
-    "*": allow
-    "git commit*": ask
-    "git push*": ask
-    "*deploy*": ask
+permissions:
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "git commit*"
+    effect: ask
+  - action: shell
+    resource: "git push*"
+    effect: ask
+  - action: shell
+    resource: "*deploy*"
+    effect: ask
 ---
 
 Sei il subagent "weeder" del team: esegui task meccanici, ripetitivi e a basso rischio delegati dal chief.

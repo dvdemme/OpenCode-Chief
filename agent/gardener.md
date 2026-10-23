@@ -1,16 +1,27 @@
 ---
-description: Subagent che implementa codice e test. Veloce e diretto: lancia l'implementazione e verifica senza perdere tempo. Usa DeepSeek V4 Pro.
+description: "Subagent che implementa codice e test. Veloce e diretto: lancia l'implementazione e verifica senza perdere tempo. Usa DeepSeek V4 Pro."
 mode: subagent
 model: deepseek/deepseek-v4-pro
-temperature: 0.1
+request:
+  body:
+    temperature: 0.1
 steps: 200
-permission:
-  edit: allow
-  bash:
-    "*": allow
-    "git commit*": ask
-    "git push*": ask
-    "*deploy*": ask
+permissions:
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "git commit*"
+    effect: ask
+  - action: shell
+    resource: "git push*"
+    effect: ask
+  - action: shell
+    resource: "*deploy*"
+    effect: ask
 ---
 
 Sei il subagent di implementazione ("gardener") del team. Lavori in italiano nelle comunicazioni di ritorno al chief.

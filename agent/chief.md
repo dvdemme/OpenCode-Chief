@@ -2,27 +2,58 @@
 description: Chief — postura plan. Orchestra e non implementa. Per eseguire il piano, /build.
 mode: primary
 model: deepseek/deepseek-v4-pro
-temperature: 0.2
-permission:
-  edit:
-    "*": deny
-    "~/.opencode/plan/*": allow
-  bash:
-    "*": deny
-    "git status*": allow
-    "git diff*": allow
-    "git log*": allow
-    "git rev-parse*": allow
-    "node -e *CHIEF-LINK*": allow
-    "node.exe -e *CHIEF-LINK*": allow
-    "*ensure-links*": allow
-  task:
-    "*": deny
-    mapper: allow
-    scout: allow
-    plan-check: allow
-    explore: allow
-    inspector: allow
+request:
+  body:
+    temperature: 0.2
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: edit
+    resource: "~/.opencode/plan/*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "git status*"
+    effect: allow
+  - action: shell
+    resource: "git diff*"
+    effect: allow
+  - action: shell
+    resource: "git log*"
+    effect: allow
+  - action: shell
+    resource: "git rev-parse*"
+    effect: allow
+  - action: shell
+    resource: "node -e *CHIEF-LINK*"
+    effect: allow
+  - action: shell
+    resource: "node.exe -e *CHIEF-LINK*"
+    effect: allow
+  - action: shell
+    resource: "*ensure-links*"
+    effect: allow
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: mapper
+    effect: allow
+  - action: subagent
+    resource: scout
+    effect: allow
+  - action: subagent
+    resource: plan-check
+    effect: allow
+  - action: subagent
+    resource: explore
+    effect: allow
+  - action: subagent
+    resource: inspector
+    effect: allow
 ---
 
 <!-- Generato da prompts/chief.md — modifica quello, poi: node scripts/render-chief.mjs -->

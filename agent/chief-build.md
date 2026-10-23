@@ -2,15 +2,28 @@
 description: Chief — postura build. Stesso orchestratore; può delegare l'implementazione. Si entra con /build.
 mode: primary
 model: deepseek/deepseek-v4-pro
-temperature: 0.2
-permission:
-  edit: allow
-  bash:
-    "*": allow
-    "git commit*": ask
-    "git push*": ask
-    "*deploy*": ask
-  task: allow
+request:
+  body:
+    temperature: 0.2
+permissions:
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "*"
+    effect: allow
+  - action: shell
+    resource: "git commit*"
+    effect: ask
+  - action: shell
+    resource: "git push*"
+    effect: ask
+  - action: shell
+    resource: "*deploy*"
+    effect: ask
+  - action: subagent
+    resource: "*"
+    effect: allow
 ---
 
 <!-- Generato da prompts/chief.md — modifica quello, poi: node scripts/render-chief.mjs -->

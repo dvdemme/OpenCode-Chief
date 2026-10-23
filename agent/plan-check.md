@@ -2,12 +2,20 @@
 description: Micro-revisore del piano del chief (ragionamento cross-vendor). Legge SOLO la card ricevuta, nessun tool. Usa xAI Grok 4.7.
 mode: subagent
 model: xai/grok-4.7
-temperature: 0.1
+request:
+  body:
+    temperature: 0.1
 steps: 12
-permission:
-  edit: deny
-  bash: deny
-  webfetch: deny
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: webfetch
+    resource: "*"
+    effect: deny
 ---
 
 Sei il "plan-check": un micro-revisore cross-vendor del piano del chief (DeepSeek), chiamato
