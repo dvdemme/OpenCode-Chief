@@ -1,30 +1,30 @@
 ---
 name: review-gate
-description: Usare prima di chiamare inspector o plan-check. Decide se saltare la review costosa (SKIP), farne una ridotta (LITE) o completa (FULL). Non revisiona il codice.
+description: Use before calling inspector or plan-check. Decides whether to skip the expensive review (SKIP), do a reduced one (LITE) or a full one (FULL). Does not review code.
 ---
 
 # Review gate
 
-Un solo output: `SKIP`, `LITE` o `FULL`. Non revisioni tu il codice.
+A single output: `SKIP`, `LITE` or `FULL`. You do not review code yourself.
 
 ## SKIP
-- Diff piccolo, nessuna logica nuova, test verdi.
-- Non tocca auth, crypto, input esterni, segreti, contratti condivisi, hardware o fisica/unità.
-Chiudi senza `inspector`.
+- Small diff, no new logic, green tests.
+- Does not touch auth, crypto, external inputs, secrets, shared contracts, hardware or physics/units.
+Close without `inspector`.
 
 ## LITE
-- Comportamento locale, ma non banale.
-- Pacchetto troncato (regola delle ~400 righe), solo i file in scope.
+- Local behavior, but non-trivial.
+- Truncated package (the ~400 line rule), only the in-scope files.
 
 ## FULL
-- Auth, segreti, permessi, contratti cross-repo, hardware/bus/dosaggi, fisica o unità.
-- Oppure secondo fail di `gardener`.
-- Pacchetto completo (`review-package`), solo in BUILD per `git add -N`.
+- Auth, secrets, permissions, cross-repo contracts, hardware/bus/dosages, physics or units.
+- Or second fail of `gardener`.
+- Full package (`review-package`), only in BUILD for `git add -N`.
 
 ## plan-check
-Solo traccia System, oppure score ≥ 2 sui trigger del chief. Mai su Quick, docs, rename o bugfix già localizzato.
+Only System track, or score ≥ 2 on the chief's triggers. Never on Quick, docs, rename or already-localized bugfix.
 
 ## Staleness
-Un edit dopo un APPROVATO invalida il verdetto. Rimanda solo il delta, non il diff intero.
+An edit after an APPROVED invalidates the verdict. Resend only the delta, not the whole diff.
 
-Output: `GATE: SKIP|LITE|FULL — motivo in 10 parole`.
+Output: `GATE: SKIP|LITE|FULL — reason in 10 words`.

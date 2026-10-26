@@ -1,4 +1,4 @@
-# Fallback Windows senza privilegi di symlink: collega i nuovi file dopo un git pull.
+# Windows fallback without symlink privileges: links the new files after a git pull.
 $ErrorActionPreference = "Stop"
 
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -39,4 +39,4 @@ Get-ChildItem (Join-Path $Repo "agent\*.md") | ForEach-Object { LinkOne $_.FullN
 Get-ChildItem (Join-Path $Repo "skill") -Directory | ForEach-Object { LinkOne $_.FullName (Join-Path $Sk $_.Name) $true }
 Get-ChildItem (Join-Path $Repo "command\*.md") | ForEach-Object { LinkOne $_.FullName (Join-Path $Cm $_.Name) $false }
 
-Write-Output "CHIEF-LINK: OK - agganciati $n"
+Write-Output "CHIEF-LINK: OK - linked $n"

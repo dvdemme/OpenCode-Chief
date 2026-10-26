@@ -1,9 +1,9 @@
 ---
-description: Passa Chief in postura plan (non implementa).
+description: Switches Chief to plan posture (does not implement).
 agent: chief
 subagent: false
 ---
 
-Siamo in postura PLAN. Non implementare e non delegare a gardener o weeder.
+We are in PLAN posture. Do not implement and do not delegate to gardener or weeder.
 
 $ARGUMENTS

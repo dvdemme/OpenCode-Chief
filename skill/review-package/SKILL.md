@@ -1,30 +1,30 @@
 ---
 name: review-package
-description: Usare SOLO per assemblare il pacchetto di review dell'inspector (diff con untracked, status, output test/build, call-graph) o il solo delta dopo un verdetto non APPROVATO. Solo in postura build. Non implementa codice e non legge .env o segreti.
+description: Use ONLY to assemble the inspector's review package (diff with untracked, status, test/build output, call-graph) or just the delta after a non-APPROVED verdict. Only in build posture. Does not implement code and does not read .env or secrets.
 ---
 
-# Pacchetto di review (per inspector)
+# Review package (for inspector)
 
-Carica questa skill solo se `review-gate` ha dato LITE o FULL. In postura PLAN `git add -N` è negato: se il diff non è già disponibile, segnala `PACCHETTO INCOMPLETO` e salta la review.
+Load this skill only if `review-gate` gave LITE or FULL. In PLAN posture `git add -N` is denied: if the diff is not already available, report `INCOMPLETE PACKAGE` and skip the review.
 
-## Sequenza deterministica (solo BUILD)
-1. `git add -N .` per includere gli untracked nel diff (MAI `git add` senza `-N`, MAI commit).
-2. `git status --porcelain` → elenco file (modificati + untracked).
-3. `git diff` → il diff.
-4. Output test/build rilevante (o `n/a` con motivo se non c'è codice).
-5. Call-graph a un hop sui simboli/funzioni nominati nella card (o `call-graph: n/a` + motivo).
+## Deterministic sequence (BUILD only)
+1. `git add -N .` to include untracked in the diff (NEVER `git add` without `-N`, NEVER commit).
+2. `git status --porcelain` → file list (modified + untracked).
+3. `git diff` → the diff.
+4. Relevant test/build output (or `n/a` with a reason if there is no code).
+5. Call-graph one hop on the symbols/functions named in the card (or `call-graph: n/a` + reason).
 
-## Completezza
-Manca uno dei cinque → dichiarare "PACCHETTO INCOMPLETO" in testa, non nasconderlo.
+## Completeness
+One of the five is missing → declare "INCOMPLETE PACKAGE" at the top, do not hide it.
 
-## Redazione
-- Se il diff mostra chiavi, token, `*.pem` o `.env`: sostituire con `[REDATTO]` e segnalare il path. NON aprire il file per verificare.
-- Sopra ~400 righe: `stat`, elenco file, diff dei soli file in scope, nota di troncamento.
+## Editing
+- If the diff shows keys, tokens, `*.pem` or `.env`: replace with `[REDACTED]` and report the path. Do NOT open the file to verify.
+- Above ~400 lines: `stat`, file list, diff of only the in-scope files, truncation note.
 
-## Modalità delta (dopo un verdetto non APPROVATO)
-Solo i file citati nelle riserve bloccanti + l'esito dei test dei fix. Non l'intero diff.
+## Delta mode (after a non-APPROVED verdict)
+Only the files cited in the blocking reservations + the test results of the fixes. Not the whole diff.
 
-## Vincoli
-weeder NON chiama inspector: il pacchetto risale al chief, che lo incolla nel Task dell'inspector.
+## Constraints
+weeder does NOT call inspector: the package goes up to the chief, who pastes it into the inspector's Task.
 
-Output: un blocco PACCHETTO.
+Output: a PACKAGE block.

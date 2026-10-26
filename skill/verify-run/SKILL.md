@@ -1,28 +1,28 @@
 ---
 name: verify-run
-description: Usare dopo una modifica di codice per eseguire il comando di verifica della card e riportare solo l'esito. Non corregge il codice e non scrive test.
+description: Use after a code change to run the card's verification command and report only the result. Does not fix code and does not write tests.
 ---
 
 # Verify run
 
-Scopo: i test non li giudica chi li ha scritti, e il loro output non rientra intero nel contesto del chief.
+Purpose: tests are not judged by whoever wrote them, and their output does not enter the chief's context in full.
 
-## Sequenza
-1. Prendi il comando di verifica dalla card. Se manca, restituisci `VERIFY: n/d` e fermati.
-2. Delega l'esecuzione a `weeder`.
-3. Raccogli solo: esito, e in caso di fallimento il primo errore.
+## Sequence
+1. Take the verification command from the card. If missing, return `VERIFY: n/a` and stop.
+2. Delegate execution to `weeder`.
+3. Collect only: the result, and in case of failure the first error.
 
 ## Output
 ```
 VERIFY: PASS
 ```
-oppure
+or
 ```
 VERIFY: FAIL
-- file:riga
-- messaggio (max 15 righe totali)
+- file:line
+- message (max 15 lines total)
 ```
 
-## Regole
-- Non rilanciare la suite nel chief. Non incollare l'output intero.
-- Non modificare codice né test: la correzione torna al `gardener`.
+## Rules
+- Do not re-run the suite in the chief. Do not paste the full output.
+- Do not modify code or tests: the fix goes back to `gardener`.

@@ -1,37 +1,37 @@
 ---
 name: dispatch-gate
-description: Usare subito prima di ogni delega a un subagent. Decide se delegare o fare inline, imposta il tetto di fan-out, il formato di ritorno e le regole di escalation. Non implementa e non revisiona.
+description: Use right before every delegation to a subagent. Decides whether to delegate or do inline, sets the fan-out cap, the return format and the escalation rules. Does not implement and does not review.
 ---
 
 # Dispatch gate
 
-Prima di ogni chiamata a un subagent, applica queste regole.
+Before every call to a subagent, apply these rules.
 
-## 1. Delegare o no
-Non delegare se il dato è già nel contesto o bastano 1–2 letture su un file noto: fai inline.
-Delega solo se compri isolamento, parallelismo o un vendor diverso. Un fan-out costa molto più di una risposta inline.
+## 1. Delegate or not
+Do not delegate if the data is already in the context or 1–2 reads on a known file are enough: do inline.
+Delegate only if you buy isolation, parallelism or a different vendor. A fan-out costs far more than an inline answer.
 
-## 2. Chi
-- Ricognizione → `mapper` (Flash). Mai `explore`: eredita il modello del padre.
-- Meccanico, rename, esecuzione test → `weeder` (Flash).
-- Design e implementazione non banale → `gardener` (Pro).
-- Immagini e diagrammi → `scout` (Flash).
-- Revisione cross-vendor → `inspector` (Grok), solo dopo `review-gate`.
-- Piano a rischio → `plan-check` (Grok), solo traccia System o score ≥ 2.
+## 2. Who
+- Reconnaissance → `mapper` (Flash). Never `explore`: it inherits the parent's model.
+- Mechanical, rename, test execution → `weeder` (Flash).
+- Non-trivial design and implementation → `gardener` (Pro).
+- Images and diagrams → `scout` (Flash).
+- Cross-vendor review → `inspector` (Grok), only after `review-gate`.
+- Risky plan → `plan-check` (Grok), only System track or score ≥ 2.
 
-## 3. Come
-- Fan-out massimo 3, nello stesso turno, con scope di scrittura disgiunti. Se due scope si sovrappongono, uniscili.
-- Una card per subagent (`task-card`). Il prompt è autonomo: path, done, vietato, formato di ritorno.
-- Chiedi conclusioni, non dump. Ogni card dichiara il tetto di righe del report.
+## 3. How
+- Fan-out max 3, in the same turn, with disjoint write scopes. If two scopes overlap, merge them.
+- One card per subagent (`task-card`). The prompt is self-contained: paths, done, forbidden, return format.
+- Ask for conclusions, not dumps. Each card declares the report line cap.
 
-## 4. Readiness (traccia Feature/System)
-Prima di delegare a `gardener`, verifica che ci siano: scope esplicito, comando di verifica, assunzioni dichiarate.
-Se manca uno dei tre, non delegare: chiedi il dato o segna `BLOCKED`.
+## 4. Readiness (Feature/System track)
+Before delegating to `gardener`, verify that there are: explicit scope, verification command, declared assumptions.
+If one of the three is missing, do not delegate: ask for the datum or mark `BLOCKED`.
 
 ## 5. Escalation
-Un solo gradino (Flash → Pro, oppure Pro → Grok su diagnosi), allegando il fallimento. Al secondo fail, fermati e chiedi all'utente. Non riprovare in loop.
+One step only (Flash → Pro, or Pro → Grok on diagnosis), attaching the failure. On the second fail, stop and ask the user. Do not retry in a loop.
 
 ## 6. Plan-delta
-Se lo scope cambia dopo un piano esistente, non riscrivere il piano: aggiungi un delta concosa cambia, cosa resta valido, cosa si toglie, cosa si aggiunge, se la readiness cambia.
+If the scope changes after an existing plan, do not rewrite the plan: add a delta: what changes, what stays valid, what is removed, what is added, whether readiness changes.
 
-Output: una riga di decisione (`inline` / `delega: <agente>`) più la card.
+Output: one decision line (`inline` / `delegate: <agent>`) plus the card.

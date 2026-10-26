@@ -1,26 +1,26 @@
 ---
 name: close-task
-description: Usare SOLO a fine task o prima di fermare la sessione. Scrive l'handoff (fatto, pendente, prossimi passi, decisioni, assunzioni, verdetti, lezione). In plan mode il blocco va nel file di piano, non nel repo. Non aprire .env, credenziali o database a mano.
+description: Use ONLY at the end of a task or before stopping the session. Writes the handoff (done, pending, next steps, decisions, assumptions, verdicts, lesson). In plan mode the block goes in the plan file, not in the repo. Do not open .env, credentials or databases by hand.
 ---
 
-# Chiusura task (handoff)
+# Task closure (handoff)
 
-## Dove scrivere
-- BUILD: nel worklog esistente (non riscriverlo); se manca, crea `WORKLOG.md` alla root del progetto.
-- PLAN: nel file di piano sotto `~/.opencode/plan`, non nel repo.
+## Where to write
+- BUILD: in the existing worklog (do not rewrite it); if missing, create `WORKLOG.md` at the project root.
+- PLAN: in the plan file under `~/.opencode/plan`, not in the repo.
 
-Sezioni (solo queste):
-- **Fatto** — completato e verificato.
-- **Pendente** — ciò che resta.
-- **Prossimi passi** — azioni concrete per la prossima sessione.
-- **Decisioni** — una riga ciascuna.
-- **Assunzioni aperte** — da verificare.
-- **Verdetti** — esito inspector/plan-check (se presenti).
-- **Lezione** — opzionale, una riga, solo se lo stesso fallimento si è ripetuto.
+Sections (only these):
+- **Done** — completed and verified.
+- **Pending** — what remains.
+- **Next steps** — concrete actions for the next session.
+- **Decisions** — one line each.
+- **Open assumptions** — to verify.
+- **Verdicts** — inspector/plan-check outcome (if any).
+- **Lesson** — optional, one line, only if the same failure repeated.
 
-## Regole
-- Niente diff, log interi o segreti nel worklog.
-- Non aprire `.env`, credenziali o database a mano.
-- Input mancante → `n/d`.
+## Rules
+- No diffs, full logs or secrets in the worklog.
+- Do not open `.env`, credentials or databases by hand.
+- Missing input → `n/a`.
 
-Output: blocco handoff (6–10 righe) da appendere.
+Output: handoff block (6–10 lines) to append.

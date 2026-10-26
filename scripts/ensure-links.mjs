@@ -44,7 +44,7 @@ function link(src, dst, isDir) {
       skipped.push(dst);
       return;
     }
-    skipped.push(`${dst} (già symlink altrove)`);
+    skipped.push(`${dst} (already a symlink elsewhere)`);
     return;
   }
 
@@ -53,10 +53,10 @@ function link(src, dst, isDir) {
     const srcSt = statSync(src);
     const typeOk = isDir ? st.isDirectory() : st.isFile();
     if (!typeOk) {
-      skipped.push(`${dst} (tipo inatteso)`);
+      skipped.push(`${dst} (unexpected type)`);
       return;
     }
-    // Copia: aggiorna solo se la sorgente è più recente. Le modifiche locali restano.
+    // Copy: update only when the source is newer. Local changes are preserved.
     if (srcSt.mtimeMs > st.mtimeMs) {
       try {
         rmSync(dst, { recursive: isDir, force: true });
@@ -67,7 +67,7 @@ function link(src, dst, isDir) {
         failed.push(`${dst}: ${e.message}`);
       }
     } else {
-      skipped.push(`${dst} (copia, invariata)`);
+      skipped.push(`${dst} (copy, unchanged)`);
     }
     return;
   }
@@ -80,7 +80,7 @@ function link(src, dst, isDir) {
     try {
       if (isDir) cpSync(src, dst);
       else copyFileSync(src, dst);
-      refreshed.push(`${dst} (copia)`);
+      refreshed.push(`${dst} (copy)`);
     } catch (e2) {
       failed.push(`${dst}: ${e2.message}`);
     }
@@ -119,9 +119,9 @@ linkDir(join(REPO, "skill"), skillsDir, "skill");
 linkDir(join(REPO, "command"), commandsDir, "command");
 
 const lines = [];
-if (linked.length) lines.push(`collegati: ${linked.length}`);
-if (refreshed.length) lines.push(`aggiornati: ${refreshed.length}`);
-if (skipped.length) lines.push(`invariati: ${skipped.length}`);
-if (failed.length) lines.push(`errori: ${failed.length}`);
+if (linked.length) lines.push(`linked: ${linked.length}`);
+if (refreshed.length) lines.push(`updated: ${refreshed.length}`);
+if (skipped.length) lines.push(`unchanged: ${skipped.length}`);
+if (failed.length) lines.push(`errors: ${failed.length}`);
 for (const f of failed) lines.push(`  ! ${f}`);
-console.log(`CHIEF-LINK: OK — ${lines.join(", ") || "niente da fare"}`);
+console.log(`CHIEF-LINK: OK — ${lines.join(", ") || "nothing to do"}`);

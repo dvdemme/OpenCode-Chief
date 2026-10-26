@@ -8,9 +8,9 @@ const body = readFileSync(join(root, "prompts", "chief.md"), "utf8").replace(/\r
 const faces = [
   {
     file: "chief.md",
-    postura: "PLAN",
+    posture: "PLAN",
     front: `---
-description: Chief — postura plan. Orchestra e non implementa. Per eseguire il piano, /build.
+description: Chief — plan posture. Orchestrates and does not implement. To execute the plan, /build.
 mode: primary
 model: deepseek/deepseek-v4-pro
 request:
@@ -70,9 +70,9 @@ permissions:
   },
   {
     file: "chief-build.md",
-    postura: "BUILD",
+    posture: "BUILD",
     front: `---
-description: Chief — postura build. Stesso orchestratore; può delegare l'implementazione. Si entra con /build.
+description: Chief — build posture. Same orchestrator; can delegate implementation. Enter with /build.
 mode: primary
 model: deepseek/deepseek-v4-pro
 request:
@@ -102,10 +102,10 @@ permissions:
   },
 ];
 
-const banner = "<!-- Generato da prompts/chief.md — modifica quello, poi: node scripts/render-chief.mjs -->\n\n";
+const banner = "<!-- Generated from prompts/chief.md — edit that file, then run: node scripts/render-chief.mjs -->\n\n";
 
 for (const face of faces) {
-  const text = face.front + "\n" + banner + body.replaceAll("{{POSTURA}}", face.postura);
+  const text = face.front + "\n" + banner + body.replaceAll("{{POSTURA}}", face.posture);
   writeFileSync(join(root, "agent", face.file), text, "utf8");
 }
 

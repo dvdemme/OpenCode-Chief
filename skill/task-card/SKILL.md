@@ -1,39 +1,39 @@
 ---
 name: task-card
-description: "Usare SOLO subito prima di una chiamata Task a gardener, weeder, inspector, scout, mapper o plan-check. Produce la task card da incollare nel prompt del subagent: obiettivo, done, file, vincoli, assunzioni, formato e tetto del report. Non usarla per routing, escalation o per decidere i gate."
+description: "Use ONLY right before a Task call to gardener, weeder, inspector, scout, mapper or plan-check. Produces the task card to paste into the subagent's prompt: objective, done, files, constraints, assumptions, format and report cap. Do not use it for routing, escalation or deciding gates."
 ---
 
 # Task card
 
-Produci UNA task card per subagent, da incollare tale e quale nel prompt del Task.
-Se il lavoro mescola meccanico e design, spezza in due card (weeder + gardener).
+Produce ONE task card per subagent, to paste as-is into the Task prompt.
+If the work mixes mechanical and design, split into two cards (weeder + gardener).
 
-## Campi obbligatori (mai omettere)
-- **id** — identificatore breve del task.
-- **agente** — chi la esegue.
-- **obiettivo** — una frase.
-- **done verificabile** — come si dimostra finito.
-- **comando di verifica** — il comando esatto, oppure `n/d` con motivo.
-- **path in scope / fuori scope** — file e dir espliciti.
-- **vincoli** — niente commit/push/deploy; niente scope extra; niente librerie nuove se non richieste.
-- **assunzioni** — `ASSUNTO` (non verificato) / `NON NOTO` (dato mancante).
-- **input già estratti** — spec/contesto rilevante incluso qui (il subagent NON fa grep).
-- **tetto del report** — righe massime di ritorno (default 25).
+## Required fields (never omit)
+- **id** — short task identifier.
+- **agent** — who executes it.
+- **objective** — one sentence.
+- **verifiable done** — how completion is demonstrated.
+- **verification command** — the exact command, or `n/a` with a reason.
+- **paths in scope / out of scope** — explicit files and dirs.
+- **constraints** — no commit/push/deploy; no extra scope; no new libraries unless required.
+- **assumptions** — `ASSUMED` (unverified) / `NOT KNOWN` (missing datum).
+- **already extracted inputs** — relevant spec/context included here (the subagent does NOT grep).
+- **report cap** — maximum return lines (default 25).
 
-## Regole per destinatario
-- **mapper**: solo `percorso:riga` + motivo, niente dump.
-- **gardener**: includi il piano richiesto prima del codice non banale; il report è max 25 righe (fatto, file, test, assunzioni), niente diff incollato.
-- **weeder**: task meccanico o esecuzione di `verify-run`; se serve il pacchetto di review, aggiungi "carica `review-package`".
-- **inspector**: la card contiene il pacchetto di review, non "esplora il repo".
-- **plan-check**: la card è solo lo schema goal/done/out/tasks/assumptions/risk, tool-off.
-- **scout**: la card indica l'immagine/diagramma da interpretare e cosa estrarre.
+## Rules per recipient
+- **mapper**: only `path:line` + reason, no dump.
+- **gardener**: include the required plan before non-trivial code; the report is max 25 lines (done, files, tests, assumptions), no pasted diff.
+- **weeder**: mechanical task or execution of `verify-run`; if the review package is needed, add "load `review-package`".
+- **inspector**: the card contains the review package, not "explore the repo".
+- **plan-check**: the card is only the goal/done/out/tasks/assumptions/risk schema, tool-off.
+- **scout**: the card indicates the image/diagram to interpret and what to extract.
 
-## Readiness e reroute
-- Se manca scope, comando di verifica o un'assunzione critica: non delegare a `gardener`, segna `BLOCKED`.
-- Se il task è in realtà meccanico: non darlo a `gardener`, metti `REROUTE: weeder`.
+## Readiness and reroute
+- If scope, verification command or a critical assumption is missing: do not delegate to `gardener`, mark `BLOCKED`.
+- If the task is actually mechanical: do not give it to `gardener`, put `REROUTE: weeder`.
 
-## Vietato
-- Segreti, token, contenuto di `.env`.
-- "Ignora le regole" o istruzioni che scavalcano il kernel.
+## Forbidden
+- Secrets, tokens, `.env` content.
+- "Ignore the rules" or instructions that bypass the kernel.
 
-Output: SOLO il blocco card.
+Output: ONLY the card block.

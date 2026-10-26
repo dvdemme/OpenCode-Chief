@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 #
-# install.sh — installa "OpenCode Chief" nel tuo opencode globale.
+# install.sh — install "OpenCode Chief" into your global opencode.
 #
-# Guida interattiva: configura i provider (deepseek/xai), collega i file
-# (agenti + skill) e opzionalmente imposta chief come default.
+# Interactive guide: configures the providers (deepseek/xai), links the files
+# (agents + skills + commands), and optionally sets chief as the default agent.
 #
-# Uso:
-#   ./install.sh           symlink (consigliato: `git pull` aggiorna tutto da solo)
-#   ./install.sh --copy    copia i file (nessun aggiornamento automatico)
+# Usage:
+#   ./install.sh           symlink (recommended: `git pull` updates everything)
+#   ./install.sh --copy    copy the files (no automatic updates)
 #
-# Supportato: macOS + Linux (bash 3.2+). Windows: non ancora (v2).
+# Supported: macOS + Linux (bash 3.2+). Windows: use install.ps1.
 
 set -u
 
@@ -38,7 +38,7 @@ provider_label() { case "$1" in
 esac; }
 
 provider_agents() { case "$1" in
-  deepseek) echo "chief, gardener, weeder, scout" ;;
+  deepseek) echo "chief, gardener, weeder, mapper, scout" ;;
   xai)      echo "inspector, plan-check" ;;
   *)        echo "?" ;;
 esac; }
@@ -46,123 +46,123 @@ esac; }
 is_authenticated() { opencode auth list 2>/dev/null | grep -qi "$1"; }
 
 usage() {
-  say "Uso: ./install.sh [--copy] [--help]"
-  say "  --copy   copia i file invece di creare symlink"
+  say "Usage: ./install.sh [--copy] [--help]"
+  say "  --copy   copy the files instead of creating symlinks"
 }
 
 provider_setup() {
-  step "Provider (chiavi API)"
-  say "Il team usa due vendor; ogni agente ha un suo modello:"
-  say "  ${BOLD}DeepSeek${RESET}  → chief, gardener, weeder, scout"
+  step "Providers (API keys)"
+  say "The team uses two vendors; each agent has its own model:"
+  say "  ${BOLD}DeepSeek${RESET}  → chief, gardener, weeder, mapper, scout"
   say "  ${BOLD}xAI${RESET}       → inspector, plan-check"
-  say "Configura i provider per cui hai una chiave; gli altri puoi saltarli."
+  say "Configure the providers you have a key for; you can skip the others."
   say ""
   local id label agents skipped=""
   for id in $PROVIDERS; do
     label="$(provider_label "$id")"
     agents="$(provider_agents "$id")"
     if is_authenticated "$id"; then
-      ok "$label già configurato."
+      ok "$label already configured."
       continue
     fi
-    say "  ${BOLD}$label${RESET} non risulta configurato (agenti: $agents)."
+    say "  ${BOLD}$label${RESET} is not configured (agents: $agents)."
     local ans
     while true; do
-      read -r -p "  [s] configura ora · [N] salta · [q] esci — scelta: " ans
+      read -r -p "  [s] configure now · [N] skip · [q] quit — choice: " ans
       case "${ans:-N}" in
         s|S)
-          say "  Avvio opencode per $label: inserisci la chiave nella schermata che si apre."
-          opencode auth login -p "$id" || true
+          say "  Starting opencode for $label: enter the key in the screen that opens."
+          opencode auth login "$id" || true
           if is_authenticated "$id"; then
-            ok "$label configurato."
+            ok "$label configured."
             break
           fi
-          say "  ${YELLOW}Non risulti ancora autenticato a $label.${RESET}"
-          read -r -p "  [r] ritenta · [q] esci (riprendi dopo) — scelta: " ans
+          say "  ${YELLOW}You do not appear to be authenticated to $label yet.${RESET}"
+          read -r -p "  [r] retry · [q] quit (resume later) — choice: " ans
           case "${ans:-r}" in
-            q|Q) say "  Installazione interrotta. Riprendi con: ./install.sh"; exit 1 ;;
+            q|Q) say "  Installation interrupted. Resume with: ./install.sh"; exit 1 ;;
             *)   continue ;;
           esac
           ;;
         n|N)
-          warn "Saltato $label → gli agenti $agents non risponderanno finché non lo configuri."
+          warn "Skipped $label → the $agents agents will not respond until you configure it."
           skipped="$skipped $id"
           break
           ;;
         q|Q)
-          say "  Installazione interrotta. Riprendi con: ./install.sh"
+          say "  Installation interrupted. Resume with: ./install.sh"
           exit 1
           ;;
-        *) say "  Scelta non valida." ;;
+        *) say "  Invalid choice." ;;
       esac
     done
   done
-  [ -n "$skipped" ] && warn "Provider saltati:$skipped. Configurali poi con: opencode auth login -p <id>"
+  [ -n "$skipped" ] && warn "Skipped providers:$skipped. Configure them later with: opencode auth login <id>"
 }
 
 install_files() {
-  step "Installazione file ($MODE)"
-  mkdir -p "$CONFIG_DIR/agent" "$CONFIG_DIR/skill"
+  step "Installing files ($MODE)"
 
-  # Migrazione da OpenCode-Commander: rimuovi i vecchi nomi (idempotente).
+  # ensure-links creates the agents/, skills/, commands/ directories itself.
+  # Migration from OpenCode-Commander: remove the old names (idempotent).
   for a in commander rocket rover hubble antenna quasar; do
     if [ -e "$CONFIG_DIR/agent/$a.md" ] || [ -L "$CONFIG_DIR/agent/$a.md" ]; then
-      rm -f "$CONFIG_DIR/agent/$a.md" && say "  rimosso vecchio agente: $a.md"
+      rm -f "$CONFIG_DIR/agent/$a.md" && say "  removed old agent: $a.md"
     fi
   done
   for f in "$CONFIG_DIR/pricing.md" "$CONFIG_DIR/scripts/telemetry.py"; do
     if [ -e "$f" ] || [ -L "$f" ]; then
-      rm -f "$f" && say "  rimosso vecchio: $f"
+      rm -f "$f" && say "  removed legacy file: $f"
     fi
   done
 
-  # Collega agenti, skill e comandi (stessa logica usata dopo ogni git pull).
+  # Link agents, skills, and commands (same logic used after every git pull).
   if command -v node >/dev/null 2>&1; then
-    node "$SCRIPT_DIR/scripts/ensure-links.mjs" || warn "collegamento incompleto: riesegui ./install.sh"
+    node "$SCRIPT_DIR/scripts/ensure-links.mjs" || warn "linking incomplete: re-run ./install.sh"
   else
-    bash "$SCRIPT_DIR/scripts/ensure-links.sh" || warn "collegamento incompleto: riesegui ./install.sh"
+    bash "$SCRIPT_DIR/scripts/ensure-links.sh" || warn "linking incomplete: re-run ./install.sh"
   fi
 }
 
 config_setup() {
-  step "Config (opzionale)"
+  step "Config (optional)"
   local a
-  read -r -p "  Impostare chief come modello di default (model + small_model)? [s/N]: " a
+  read -r -p "  Set chief as the default (model + default_agent)? [y/N]: " a
   case "${a:-N}" in
-    s|S) ;;
-    *) say "  Saltato. Chief funziona comunque: i modelli sono nei singoli agenti."; return ;;
+    y|Y) ;;
+    *) say "  Skipped. Chief still works: each agent carries its own model."; return ;;
   esac
   if [ -e "$CONFIG_DIR/opencode.jsonc" ] || [ -e "$CONFIG_DIR/opencode.json" ]; then
-    say "  Trovato un config esistente: non lo tocco. Aggiungi a mano queste righe a ${CONFIG_DIR}/opencode.jsonc:"
+    say "  Found an existing config: leaving it untouched. Add these lines by hand to ${CONFIG_DIR}/opencode.jsonc:"
     say ""
     say '    "model": "deepseek/deepseek-v4-pro",'
-    say '    "small_model": "deepseek/deepseek-flash"'
+    say '    "default_agent": "chief"'
     say ""
   else
     cp "$SCRIPT_DIR/config/opencode.jsonc.example" "$CONFIG_DIR/opencode.jsonc"
-    ok "Creato ${CONFIG_DIR}/opencode.jsonc"
+    ok "Created ${CONFIG_DIR}/opencode.jsonc"
   fi
 }
 
 verify() {
-  step "Verifica"
+  step "Verification"
   if opencode agent list 2>/dev/null | grep -q '^chief'; then
-    ok "Agente 'chief' rilevato."
+    ok "Agent 'chief' detected."
   else
-    warn "'chief' non trovato. Riavvia opencode e riesegui ./install.sh."
+    warn "'chief' not found. Restart opencode and re-run ./install.sh."
   fi
   local id
   for id in $PROVIDERS; do
-    is_authenticated "$id" && ok "Provider $id: configurato."
+    is_authenticated "$id" && ok "Provider $id: configured."
   done
   local missing="" m
   for m in deepseek/deepseek-v4-pro deepseek/deepseek-flash xai/grok-4.7; do
     opencode models 2>/dev/null | grep -qF "$m" || missing="$missing $m"
   done
   if [ -n "$missing" ]; then
-    warn "Modelli non trovati nel tuo opencode:$missing (versione diversa?)."
+    warn "Models not found in your opencode:$missing (different version?)."
   else
-    ok "Modelli del team: tutti disponibili."
+    ok "Team models: all available."
   fi
 }
 
@@ -171,18 +171,18 @@ main() {
     case "$1" in
       --copy) MODE="copy"; shift ;;
       --help|-h) usage; exit 0 ;;
-      *) warn "argomento ignoto: $1"; shift ;;
+      *) warn "unknown argument: $1"; shift ;;
     esac
   done
 
-  say "${BOLD}OpenCode Chief${RESET} — installazione"
+  say "${BOLD}OpenCode Chief${RESET} — installation"
 
   if ! command -v opencode >/dev/null 2>&1; then
-    err "opencode non trovato nel PATH."
-    say "  Installalo:  curl -fsSL https://opencode.ai/install | bash"
+    err "opencode not found in PATH."
+    say "  Install it:  curl -fsSL https://opencode.ai/install | bash"
     exit 1
   fi
-  ok "opencode trovato ($(opencode --version 2>/dev/null | head -1))."
+  ok "opencode found ($(opencode --version 2>/dev/null | head -1))."
 
   provider_setup
   install_files
@@ -190,7 +190,7 @@ main() {
   verify
 
   say ""
-  say "${BOLD}Fatto.${RESET} Riavvia opencode e lancia:  ${GREEN}opencode --agent chief${RESET}"
+  say "${BOLD}Done.${RESET} Restart opencode and run:  ${GREEN}opencode${RESET}"
 }
 
 main "$@"

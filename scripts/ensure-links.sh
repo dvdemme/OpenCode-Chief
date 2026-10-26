@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Fallback senza Node per macOS/Linux: collega i nuovi file del team dopo un git pull.
+# Node-free fallback for macOS/Linux: links the team's new files after a git pull.
 set -u
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -30,4 +30,4 @@ for f in "$REPO"/agent/*.md; do [ -e "$f" ] || continue; link_one "$f" "$AG/$(ba
 for d in "$REPO"/skill/*/; do [ -e "${d}SKILL.md" ] || continue; link_one "${d%/}" "$SK/$(basename "$d")" 1; done
 for f in "$REPO"/command/*.md; do [ -e "$f" ] || continue; link_one "$f" "$CM/$(basename "$f")" 0; done
 
-echo "CHIEF-LINK: OK — agganciati $n"
+echo "CHIEF-LINK: OK — linked $n"

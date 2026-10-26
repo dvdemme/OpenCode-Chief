@@ -1,9 +1,9 @@
 ---
-description: Passa Chief in postura build ed esegue il piano approvato.
+description: Switches Chief to build posture and executes the approved plan.
 agent: chief-build
 subagent: false
 ---
 
-Siamo in postura BUILD. Se esiste un piano in `~/.opencode/plan`, esegui quello senza ripianificare da zero; altrimenti esegui il lavoro richiesto. Commit, push e deploy restano da confermare.
+We are in BUILD posture. If a plan exists in `~/.opencode/plan`, execute it without re-planning from scratch; otherwise execute the requested work. Commit, push and deploy remain to be confirmed.
 
 $ARGUMENTS
