@@ -1,5 +1,7 @@
 # OpenCode Chief
 
+[![XERJ Corpus Hub contributor](https://hub.xerj.org/contributors/dvdemme/badge.svg)](https://hub.xerj.org/contributors/dvdemme)
+
 An AI agent "team" for [opencode](https://opencode.ai): an orchestrator (`chief`) that plans, breaks down, and delegates to a crew of specialized subagents, with multi-vendor cross-review.
 
 Two independent vendors (DeepSeek and xAI/Grok), each used where it fits best. Works on macOS, Linux, and Windows.
