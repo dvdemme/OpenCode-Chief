@@ -1,5 +1,15 @@
 # Worklog
 
+## 2026-10-29 — XERJ Corpus Hub contributor badge
+
+- **Done**: added the XERJ Corpus Hub contributor badge to `README.md` (below the title, blank lines before/after); commit `ca1daa9`, pushed to `main`.
+- **Pending**: n/a.
+- **Next steps**: visual check on GitHub — the badge may render broken and the link may warn, because `hub.xerj.org` serves a self-signed cert.
+- **Decisions**: push anyway, visual check afterwards; if broken, remove or hold until XERJ fixes the cert.
+- **Open assumptions**: GitHub camo proxy rejects the self-signed cert (unverified).
+- **Verdicts**: n/a (docs task, no review gate).
+- **Lesson**: n/a.
+
 ## 2026-10-26 — Public readiness: English docs (XERJ Corpus Hub)
 
 - **Done**: translated `README.md` and `WORKLOG.md` to English; added "Cost awareness" and "Models & providers" sections; translated agents, skills, commands, and install scripts; regenerated `chief.md`/`chief-build.md` from `prompts/chief.md`; removed `small_model` from the example config; fixed `install.sh` (auth without `-p`, added `mapper` to the DeepSeek list, dropped the premature `agent`/`skill` mkdir); added the legacy cleanup to `install.ps1`.
